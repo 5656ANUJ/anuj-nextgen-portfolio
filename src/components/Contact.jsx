@@ -1,4 +1,4 @@
-import { Phone, Mail, Linkedin, MessageSquare, Send } from "lucide-react";
+import { Phone, Mail, Linkedin, MessageSquare, Send, Github, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,6 +40,20 @@ const Contact = () => {
       value: "Connect with me",
       href: "https://www.linkedin.com/in/anuj-dekate-developer",
       color: "text-purple-400"
+    },
+    {
+      icon: Github,
+      label: "GitHub",
+      value: "View my code",
+      href: "https://github.com/5656ANUJ",
+      color: "text-gray-300"
+    },
+    {
+      icon: Instagram,
+      label: "Instagram",
+      value: "Follow me",
+      href: "https://www.instagram.com/anuj__7620/profilecard/?igsh=MWl0ZmQ4dnNxMDFzYw==",
+      color: "text-pink-400"
     }
   ];
 
@@ -85,8 +99,8 @@ const Contact = () => {
                 <a
                   key={index}
                   href={info.href}
-                  target={info.label === "LinkedIn" ? "_blank" : undefined}
-                  rel={info.label === "LinkedIn" ? "noopener noreferrer" : undefined}
+                  target={info.label === "LinkedIn" || info.label === "GitHub" || info.label === "Instagram" ? "_blank" : undefined}
+                  rel={info.label === "LinkedIn" || info.label === "GitHub" || info.label === "Instagram" ? "noopener noreferrer" : undefined}
                   className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 hover:transform hover:scale-105 transition-all duration-300 group"
                 >
                   <div className="flex items-center space-x-3">
