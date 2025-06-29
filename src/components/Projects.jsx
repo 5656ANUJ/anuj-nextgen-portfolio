@@ -10,7 +10,7 @@ const Projects = () => {
       status: "In Progress",
       category: "Web Application",
       color: "from-blue-500 to-purple-600",
-      githubUrl: "https://github.com/yourusername/coaching-centre-website",
+      githubUrl: "https://github.com/5656ANUJ/Coaching_Frontend.git",
       liveUrl: "https://coaching-centre-demo.vercel.app"
     },
     {
@@ -20,7 +20,7 @@ const Projects = () => {
       status: "MVP Ready",
       category: "EdTech Platform",
       color: "from-green-500 to-teal-600",
-      githubUrl: "https://github.com/yourusername/mentor-hub",
+      githubUrl: "https://github.com/5656ANUJ/alumniportal56.git",
       liveUrl: "https://5656anuj.github.io/alumniportal56/"
     },
     {
@@ -30,7 +30,7 @@ const Projects = () => {
       status: "Completed",
       category: "E-commerce",
       color: "from-orange-500 to-red-600",
-      githubUrl: "https://github.com/yourusername/amazon-clone",
+      githubUrl: "https://github.com/5656ANUJ/developmentprojects/amazon clone.git",
       liveUrl: "https://5656anuj.github.io/developmentprojects/amazon%20clone/"
     },
     {
@@ -40,7 +40,7 @@ const Projects = () => {
       status: "Completed",
       category: "Food Tech",
       color: "from-pink-500 to-rose-600",
-      githubUrl: "https://github.com/yourusername/zomato-clone",
+      githubUrl: "https://github.com/5656ANUJ/first-project-.git",
       liveUrl: "https://zomato-clone-demo.netlify.app"
     }
   ];
