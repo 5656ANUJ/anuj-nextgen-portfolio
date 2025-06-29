@@ -1,4 +1,3 @@
-
 const Skills = () => {
   const skillCategories = [
     {
@@ -71,4 +70,4 @@ const Skills = () => {
   );
 };
 
-export default Skills;
+export default Skills; 

@@ -1,4 +1,3 @@
-
 const About = () => {
   return (
     <section id="about" className="py-20 px-4">
@@ -55,4 +54,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default About; 

@@ -1,4 +1,3 @@
-
 import { Calendar, MapPin, Building } from "lucide-react";
 
 const Experience = () => {
@@ -81,4 +80,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export default Experience; 

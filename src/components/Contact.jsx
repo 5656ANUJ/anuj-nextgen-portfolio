@@ -1,4 +1,3 @@
-
 import { Phone, Mail, Linkedin, MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,14 +43,14 @@ const Contact = () => {
     }
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
     console.log('Form submitted:', formData);
@@ -189,4 +188,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default Contact; 

@@ -1,4 +1,3 @@
-
 import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -93,4 +92,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default Projects; 
