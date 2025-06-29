@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { sendEmail } from "@/lib/emailService";
+import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,8 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const contactInfo = [
     {
@@ -64,12 +68,38 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      const result = await sendEmail(formData);
+      
+      if (result.success) {
+        toast({
+          title: "Message Sent Successfully!",
+          description: "Thank you for reaching out. I'll get back to you soon!",
+          variant: "default",
+        });
+        
+        // Reset form
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        toast({
+          title: "Error Sending Message",
+          description: "Please try again or contact me directly via email.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error Sending Message",
+        description: "Please try again or contact me directly via email.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -141,6 +171,7 @@ const Contact = () => {
                     onChange={handleInputChange}
                     className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div>
@@ -152,6 +183,7 @@ const Contact = () => {
                     onChange={handleInputChange}
                     className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -165,6 +197,7 @@ const Contact = () => {
                   onChange={handleInputChange}
                   className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
               
@@ -177,15 +210,26 @@ const Contact = () => {
                   rows={6}
                   className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 resize-none"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
               
               <Button 
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 rounded-lg transition-all duration-300 hover:scale-105"
+                disabled={isSubmitting}
               >
-                <Send size={20} className="mr-2" />
-                Send Message
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} className="mr-2" />
+                    Send Message
+                  </>
+                )}
               </Button>
             </form>
           </div>
