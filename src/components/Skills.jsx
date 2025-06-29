@@ -9,6 +9,7 @@ import {
   Palette as DesignIcon,
   Github
 } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 // Import logo files
 import ReactLogo from '../assests/logos/icons8-react-native-50.svg';
@@ -122,25 +123,51 @@ const skillCategories = [
 ];
 
 const Skills = () => {
+  const [titleRef, titleVisible] = useScrollAnimation();
+  const [gridRef, gridVisible] = useScrollAnimation();
+
   return (
-    <section id="skills" className="py-20 px-4 bg-slate-900/50">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-white mb-12">
-          My <span className="text-purple-400">Skills</span>
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section id="skills" className="py-20 px-4 bg-slate-900/50 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-purple-900/10 to-slate-900/50" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-12 scroll-animate ${titleVisible ? 'animate-in' : ''}`}
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            My <span className="text-purple-400 gradient-text-animate">Skills</span>
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Technologies and tools I use to bring ideas to life
+          </p>
+        </div>
+        
+        <div 
+          ref={gridRef}
+          className={`grid md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-stagger ${gridVisible ? 'animate-in' : ''}`}
+        >
           {skillCategories.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300">
+            <div 
+              key={categoryIndex} 
+              className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 hover:transform hover:scale-105 transition-all duration-300 border border-slate-700/50 hover:border-purple-500/50 shadow-lg hover:shadow-purple-500/10"
+            >
               <h3 className={`text-xl font-semibold mb-6 bg-gradient-to-r ${category.color} bg-clip-text text-transparent`}>
                 {category.title}
               </h3>
               <div className="space-y-4">
                 {category.skills.map((skill, skillIndex) => (
-                  <div key={skillIndex} className="flex items-center gap-4 group">
+                  <div 
+                    key={skillIndex} 
+                    className="flex items-center gap-4 group hover:bg-slate-700/30 p-2 rounded-lg transition-all duration-200"
+                  >
                     <div className="group-hover:animate-pulse">
                       {skill.icon}
                     </div>
-                    <span className="text-gray-300 font-medium text-base group-hover:text-white transition-colors duration-200">{skill.name}</span>
+                    <span className="text-gray-300 font-medium text-base group-hover:text-white transition-colors duration-200">
+                      {skill.name}
+                    </span>
                   </div>
                 ))}
               </div>

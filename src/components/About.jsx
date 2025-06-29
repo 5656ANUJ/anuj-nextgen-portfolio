@@ -1,12 +1,32 @@
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+
 const About = () => {
+  const [titleRef, titleVisible] = useScrollAnimation();
+  const [contentRef, contentVisible] = useScrollAnimation();
+  const [statsRef, statsVisible] = useScrollAnimation();
+
   return (
-    <section id="about" className="py-20 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-white mb-12">
-          About <span className="text-purple-400">Me</span>
-        </h2>
+    <section id="about" className="py-20 px-4 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/30 via-purple-900/5 to-slate-900/30" />
+      
+      <div className="max-w-4xl mx-auto relative z-10">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-12 scroll-animate ${titleVisible ? 'animate-in' : ''}`}
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            About <span className="text-purple-400 gradient-text-animate">Me</span>
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Get to know me better and my journey in tech
+          </p>
+        </div>
         
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
+        <div 
+          ref={contentRef}
+          className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-slate-700/50 scroll-animate scroll-animate-delay-200 ${contentVisible ? 'animate-in' : ''}`}
+        >
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl font-semibold text-white mb-4">
@@ -28,20 +48,23 @@ const About = () => {
               </p>
             </div>
             
-            <div className="space-y-4">
-              <div className="bg-slate-700/50 rounded-lg p-4">
+            <div 
+              ref={statsRef}
+              className={`space-y-4 scroll-stagger ${statsVisible ? 'animate-in' : ''}`}
+            >
+              <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-purple-500/50">
                 <h4 className="text-lg font-semibold text-purple-400 mb-2">Education</h4>
                 <p className="text-gray-300">B.Tech in Electronics & Communications</p>
                 <p className="text-gray-400 text-sm">SINHGAD INSTITUTE (2024-2028)</p>
               </div>
               
-              <div className="bg-slate-700/50 rounded-lg p-4">
+              <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-blue-500/50">
                 <h4 className="text-lg font-semibold text-blue-400 mb-2">Current Role</h4>
                 <p className="text-gray-300">Web Development Intern</p>
                 <p className="text-gray-400 text-sm">InternPro (June 2025 - Present)</p>
               </div>
               
-              <div className="bg-slate-700/50 rounded-lg p-4">
+              <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-green-500/50">
                 <h4 className="text-lg font-semibold text-green-400 mb-2">Content Creator</h4>
                 <p className="text-gray-300">The NextGen Yatra - YouTube</p>
                 <p className="text-gray-400 text-sm">Teaching MERN Stack Development</p>
