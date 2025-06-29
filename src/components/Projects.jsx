@@ -30,7 +30,7 @@ const Projects = () => {
       status: "Completed",
       category: "E-commerce",
       color: "from-orange-500 to-red-600",
-      githubUrl: "https://github.com/5656ANUJ/developmentprojects/amazon clone.git",
+      githubUrl: "https://github.com/5656ANUJ/developmentprojects/tree/main/amazon%20clone",
       liveUrl: "https://5656anuj.github.io/developmentprojects/amazon%20clone/"
     },
     {

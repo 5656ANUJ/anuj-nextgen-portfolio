@@ -1,4 +1,4 @@
-import { ArrowDown, Github, Linkedin, Mail, Phone } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Mail, Phone, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
@@ -45,6 +45,22 @@ const Hero = () => {
             className="text-gray-400 hover:text-blue-400 transition-colors duration-200 hover:scale-110 transform"
           >
             <Linkedin size={28} />
+          </a>
+          <a 
+            href="https://github.com/5656ANUJ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-gray-300 transition-colors duration-200 hover:scale-110 transform"
+          >
+            <Github size={28} />
+          </a>
+          <a 
+            href="https://www.instagram.com/anuj__7620/profilecard/?igsh=MWl0ZmQ4dnNxMDFzYw=="
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-pink-400 transition-colors duration-200 hover:scale-110 transform"
+          >
+            <Instagram size={28} />
           </a>
           <a 
             href="mailto:dekateanuj65@gmail.com"
