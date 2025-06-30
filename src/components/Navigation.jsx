@@ -20,6 +20,7 @@ const Navigation = () => {
     { name: "Projects", href: "#projects" },
     { name: "Experience", href: "#experience" },
     { name: "Contact", href: "#contact" },
+    
   ];
 
   return (
@@ -38,6 +39,7 @@ const Navigation = () => {
                 key={item.name}
                 href={item.href}
                 className="text-gray-300 hover:text-white transition-colors duration-200 hover:scale-105 transform"
+                {...(item.external && { target: "_blank", rel: "noopener noreferrer" })}
               >
                 {item.name}
               </a>
@@ -59,7 +61,8 @@ const Navigation = () => {
                 key={item.name}
                 href={item.href}
                 className="block py-2 text-gray-300 hover:text-white transition-colors duration-200"
-                onClick={() => setIsOpen(false)}
+                onClick={() => !item.external && setIsOpen(false)}
+                {...(item.external && { target: "_blank", rel: "noopener noreferrer" })}
               >
                 {item.name}
               </a>

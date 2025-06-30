@@ -1,4 +1,3 @@
-
 import { ArrowDown, Github, Linkedin, Mail, Phone, Instagram, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
@@ -12,14 +11,12 @@ const Hero = () => {
   const [arrowRef, arrowVisible] = useScrollAnimation();
 
   const handleResumeDownload = () => {
-    // Create a temporary link element to trigger download
-    // You'll need to add your actual resume file to the public folder
-    const link = document.createElement('a');
-    link.href = '/resume.pdf'; // Add your resume file to public folder
-    link.download = 'Anuj_Dekate_Resume.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Replace this URL with your actual resume link
+    // You can host your resume on Google Drive, Dropbox, or any file hosting service
+    const resumeUrl = 'https://drive.google.com/file/d/1OMkxJrAXmWA2S4nBPdz6ng0x0YPCVlHk/view?usp=drivesdk'; // Replace with your actual resume URL
+    
+    // Open resume in new tab
+    window.open(resumeUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
