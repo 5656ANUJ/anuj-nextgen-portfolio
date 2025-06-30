@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Building } from "lucide-react";
+import { Calendar, MapPin, Building, Award, ExternalLink } from "lucide-react";
 
 const Experience = () => {
   const experiences = [
@@ -23,9 +23,39 @@ const Experience = () => {
   ];
 
   const certifications = [
-    "IEEE Cybersecurity Workshop",
-    "CodeQuest MCQ Challenge", 
-    "Let's Upgrade Certification"
+    {
+      title: "Graphic Design with Canva",
+      issuer: "LetsUpgrade",
+      date: "June 2025",
+      skills: ["Canva", "Graphic Design"],
+      description: "Comprehensive graphic design certification covering design principles and Canva tools.",
+      logo: "LetsUpgrade"
+    },
+    {
+      title: "UI UX Design with Figma and Adobe XD",
+      issuer: "Udemy",
+      date: "June 2025",
+      skills: ["Figma (Software)", "Wireframing", "UI/UX"],
+      description: "Complete UI/UX design course covering wireframing, prototyping, and design systems.",
+      logo: "Udemy"
+    },
+    {
+      title: "Instagram Clone Figma Design",
+      issuer: "LetsUpgrade",
+      date: "April 2025",
+      skills: ["Figma (Software)", "UI/UX", "Graphic Design"],
+      description: "Advanced design and development skills certification program.",
+      logo: "LetsUpgrade"
+    },
+    {
+      title: "CodeQuest MCQ Challenge",
+      issuer: "Unstop",
+      date: "March 2025",
+      skills: ["Programming", "Problem Solving", "Technical Skills"],
+      description: "Competitive programming challenge testing coding knowledge and problem-solving abilities.",
+      logo: "Unstop"
+    },
+   
   ];
 
   return (
@@ -66,11 +96,42 @@ const Experience = () => {
         </div>
 
         <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6">
-          <h3 className="text-2xl font-semibold text-white mb-6 text-center">Certifications</h3>
-          <div className="grid md:grid-cols-3 gap-4">
+          <h3 className="text-2xl font-semibold text-white mb-6 text-center flex items-center justify-center">
+            <Award className="mr-2 text-purple-400" size={28} />
+            Certifications & Licenses
+          </h3>
+          <div className="grid md:grid-cols-2 gap-6">
             {certifications.map((cert, index) => (
-              <div key={index} className="bg-slate-700/50 rounded-lg p-4 text-center hover:bg-slate-700/70 transition-colors duration-200">
-                <p className="text-gray-300 font-medium">{cert}</p>
+              <div key={index} className="bg-slate-700/50 rounded-xl p-6 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-purple-500/50 hover:scale-105 transform">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-white mb-1">{cert.title}</h4>
+                    <div className="flex items-center text-gray-300 mb-2">
+                      <Building size={14} className="mr-2" />
+                      {cert.issuer}
+                    </div>
+                    <div className="flex items-center text-gray-400 text-sm mb-3">
+                      <Calendar size={14} className="mr-1" />
+                      Issued {cert.date}
+                    </div>
+                  </div>
+                  <div className="bg-purple-500/20 rounded-lg px-3 py-1">
+                    <span className="text-purple-400 text-xs font-medium">{cert.logo}</span>
+                  </div>
+                </div>
+                
+                <div className="mb-3">
+                  <p className="text-gray-300 text-sm mb-2">Skills:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {cert.skills.map((skill, skillIndex) => (
+                      <span key={skillIndex} className="bg-slate-600/50 text-gray-300 text-xs px-2 py-1 rounded-full">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <p className="text-gray-400 text-sm leading-relaxed">{cert.description}</p>
               </div>
             ))}
           </div>
