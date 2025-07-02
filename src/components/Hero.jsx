@@ -13,7 +13,7 @@ const Hero = () => {
   const handleResumeDownload = () => {
     // Replace this URL with your actual resume link
     // You can host your resume on Google Drive, Dropbox, or any file hosting service
-    const resumeUrl = 'https://docs.google.com/document/d/1Dnqimfj390AeQMrvs6_cmc2ywYx_Ma6JiPGfv70lPyk/edit?usp=sharing'; // Replace with your actual resume URL
+    const resumeUrl = 'https://docs.google.com/document/d/e/2PACX-1vSJpLe9h9QIcs3v9h5OmToRvZWScHKwdXXb-tjA8x62g5dkrOdDXY_PRS4KNbG4ZO7anPdPkkwfKrWY/pub'; // Replace with your actual resume URL
     
     // Open resume in new tab
     window.open(resumeUrl, '_blank', 'noopener,noreferrer');
