@@ -27,6 +27,35 @@ ChartJS.register(
   BarElement
 );
 
+const fetchContributionData = async (username, token) => {
+  const query = `
+    query {
+      user(login: "${username}") {
+        contributionsCollection {
+          contributionCalendar {
+            weeks {
+              contributionDays {
+                date
+                contributionCount
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  const response = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ query }),
+  });
+  const result = await response.json();
+  return result.data.user.contributionsCollection.contributionCalendar.weeks;
+};
+
 const GitHubAnalytics = () => {
   const [headerRef, headerVisible] = useScrollAnimation();
   const [profileRef, profileVisible] = useScrollAnimation();
@@ -39,24 +68,30 @@ const GitHubAnalytics = () => {
   const [repositories, setRepositories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [contributionWeeks, setContributionWeeks] = useState([]);
 
   const username = "5656ANUJ";
 
   useEffect(() => {
-    const fetchGitHubData = async () => {
+    const fetchAllData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch user profile data
         const userResponse = await fetch(`https://api.github.com/users/${username}`);
         if (!userResponse.ok) throw new Error('Failed to fetch user data');
         const userData = await userResponse.json();
-        
+
         // Fetch repositories data
         const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
         if (!reposResponse.ok) throw new Error('Failed to fetch repositories');
         const reposData = await reposResponse.json();
-        
+
+        // Fetch real contribution data
+        const token = import.meta.env.VITE_GITHUB_TOKEN;
+        const weeks = await fetchContributionData(username, token);
+        setContributionWeeks(weeks);
+
         setGithubData(userData);
         setRepositories(reposData);
         setLoading(false);
@@ -67,7 +102,7 @@ const GitHubAnalytics = () => {
       }
     };
 
-    fetchGitHubData();
+    fetchAllData();
   }, []);
 
   if (loading) {
@@ -111,49 +146,41 @@ const GitHubAnalytics = () => {
     .sort(([,a], [,b]) => b - a)
     .slice(0, 6);
 
-  // Generate mock contribution data (GitHub API doesn't provide this without authentication)
-  const generateContributionData = () => {
-    const data = [];
-    const today = new Date();
-    const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-    
-    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-      const contributions = Math.floor(Math.random() * 8);
-      data.push({
-        date: new Date(d),
-        count: contributions,
-        level: contributions === 0 ? 0 : contributions <= 2 ? 1 : contributions <= 4 ? 2 : contributions <= 6 ? 3 : 4
-      });
-    }
-    return data;
-  };
-
-  const contributionData = generateContributionData();
+  const contributionData = contributionWeeks.flatMap(week =>
+    week.contributionDays.map(day => ({
+      date: new Date(day.date),
+      count: day.contributionCount,
+      level:
+        day.contributionCount === 0
+          ? 0
+          : day.contributionCount <= 2
+          ? 1
+          : day.contributionCount <= 4
+          ? 2
+          : day.contributionCount <= 6
+          ? 3
+          : 4,
+    }))
+  );
   const totalContributions = contributionData.reduce((sum, day) => sum + day.count, 0);
 
-  // Group contribution data by weeks
+  // Group by weeks for your heatmap
   const getWeeksData = () => {
     const weeks = [];
     let currentWeek = [];
-    
     contributionData.forEach((day, index) => {
       const dayOfWeek = day.date.getDay();
-      
       if (dayOfWeek === 0 && currentWeek.length > 0) {
         weeks.push([...currentWeek]);
         currentWeek = [];
       }
-      
       currentWeek.push(day);
-      
       if (index === contributionData.length - 1) {
         weeks.push(currentWeek);
       }
     });
-    
     return weeks;
   };
-
   const weeksData = getWeeksData();
 
   const getContributionColor = (level) => {
@@ -356,11 +383,9 @@ const GitHubAnalytics = () => {
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-white mb-2">Contribution Activity</h3>
             <p className="text-gray-300">
-              {totalContributions} contributions in the last year (simulated data)
+              {totalContributions} contributions in the last year
             </p>
-            <p className="text-sm text-gray-400 mt-1">
-              *Note: Actual contribution data requires GitHub authentication
-            </p>
+           
           </div>
           
           <div className="overflow-x-auto">
