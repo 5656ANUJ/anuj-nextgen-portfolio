@@ -1,8 +1,10 @@
+
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import Experience from "@/components/Experience";
+import GitHubAnalytics from "@/components/GitHubAnalytics";
 import Contact from "@/components/Contact";
 import Navigation from "@/components/Navigation";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -19,9 +21,10 @@ const Index = () => {
       <Skills />
       <Projects />
       <Experience />
+      <GitHubAnalytics />
       <Contact />
     </div>
   );
 };
 
-export default Index; 
+export default Index;
