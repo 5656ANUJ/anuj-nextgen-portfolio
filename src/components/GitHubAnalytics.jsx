@@ -93,6 +93,11 @@ const GitHubAnalytics = () => {
 
         // Fetch real contribution data
         const token = import.meta.env.VITE_GITHUB_TOKEN;
+        if (!token) {
+          setError("GitHub token is missing. Please set VITE_GITHUB_TOKEN in your environment variables.");
+          setLoading(false);
+          return;
+        }
         const weeks = await fetchContributionData(username, token);
         setContributionWeeks(weeks);
 
