@@ -53,6 +53,10 @@ const fetchContributionData = async (username, token) => {
     body: JSON.stringify({ query }),
   });
   const result = await response.json();
+  if (!result.data || !result.data.user) {
+    console.error('GitHub GraphQL error:', result);
+    throw new Error('Failed to fetch contribution data');
+  }
   return result.data.user.contributionsCollection.contributionCalendar.weeks;
 };
 
