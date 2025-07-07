@@ -37,77 +37,10 @@ const GitHubAnalytics = () => {
 
   const [githubData, setGithubData] = useState(null);
   const [repositories, setRepositories] = useState([]);
-  const [contributionData, setContributionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const username = "5656ANUJ";
-
-  // Fetch contribution data from GitHub events API
-  const fetchContributionData = async () => {
-    try {
-      const response = await fetch(`https://api.github.com/users/${username}/events?per_page=100`);
-      if (!response.ok) throw new Error('Failed to fetch events data');
-      const events = await response.json();
-      
-      // Process events to create contribution data
-      const contributionMap = new Map();
-      const today = new Date();
-      const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-      
-      // Initialize all days with 0 contributions
-      for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-        const dateKey = d.toISOString().split('T')[0];
-        contributionMap.set(dateKey, 0);
-      }
-      
-      // Count contributions from events
-      events.forEach(event => {
-        const eventDate = new Date(event.created_at).toISOString().split('T')[0];
-        if (contributionMap.has(eventDate)) {
-          // Count different types of events as contributions
-          if (['PushEvent', 'CreateEvent', 'IssuesEvent', 'PullRequestEvent'].includes(event.type)) {
-            contributionMap.set(eventDate, contributionMap.get(eventDate) + 1);
-          }
-        }
-      });
-      
-      // Convert map to array format
-      const contributions = [];
-      for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-        const dateKey = d.toISOString().split('T')[0];
-        const count = contributionMap.get(dateKey) || 0;
-        contributions.push({
-          date: new Date(d),
-          count,
-          level: count === 0 ? 0 : count <= 2 ? 1 : count <= 4 ? 2 : count <= 6 ? 3 : 4
-        });
-      }
-      
-      return contributions;
-    } catch (error) {
-      console.error('Error fetching contribution data:', error);
-      // Fallback to mock data if API fails
-      return generateMockContributionData();
-    }
-  };
-
-  // Fallback mock data function
-  const generateMockContributionData = () => {
-    const data = [];
-    const today = new Date();
-    const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-    
-    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-      const contributions = Math.floor(Math.random() * 8);
-      data.push({
-        date: new Date(d),
-        count: contributions,
-        level: contributions === 0 ? 0 : contributions <= 2 ? 1 : contributions <= 4 ? 2 : contributions <= 6 ? 3 : 4
-      });
-    }
-    return data;
-  };
 
   useEffect(() => {
     const fetchGitHubData = async () => {
@@ -124,12 +57,8 @@ const GitHubAnalytics = () => {
         if (!reposResponse.ok) throw new Error('Failed to fetch repositories');
         const reposData = await reposResponse.json();
         
-        // Fetch contribution data
-        const contributions = await fetchContributionData();
-        
         setGithubData(userData);
         setRepositories(reposData);
-        setContributionData(contributions);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching GitHub data:', err);
@@ -182,6 +111,24 @@ const GitHubAnalytics = () => {
     .sort(([,a], [,b]) => b - a)
     .slice(0, 6);
 
+  // Generate mock contribution data (GitHub API doesn't provide this without authentication)
+  const generateContributionData = () => {
+    const data = [];
+    const today = new Date();
+    const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+    
+    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
+      const contributions = Math.floor(Math.random() * 8);
+      data.push({
+        date: new Date(d),
+        count: contributions,
+        level: contributions === 0 ? 0 : contributions <= 2 ? 1 : contributions <= 4 ? 2 : contributions <= 6 ? 3 : 4
+      });
+    }
+    return data;
+  };
+
+  const contributionData = generateContributionData();
   const totalContributions = contributionData.reduce((sum, day) => sum + day.count, 0);
 
   // Group contribution data by weeks
@@ -225,11 +172,8 @@ const GitHubAnalytics = () => {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
-        label: 'Monthly Contributions',
-        data: Array.from({ length: 12 }, (_, month) => {
-          return contributionData.filter(day => day.date.getMonth() === month)
-            .reduce((sum, day) => sum + day.count, 0);
-        }),
+        label: 'Repository Activity',
+        data: Array.from({ length: 12 }, () => Math.floor(Math.random() * 20) + 5),
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         tension: 0.4,
@@ -412,10 +356,10 @@ const GitHubAnalytics = () => {
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-white mb-2">Contribution Activity</h3>
             <p className="text-gray-300">
-              {totalContributions} contributions in the last year
+              {totalContributions} contributions in the last year (simulated data)
             </p>
             <p className="text-sm text-gray-400 mt-1">
-              Based on public repository events and activities
+              *Note: Actual contribution data requires GitHub authentication
             </p>
           </div>
           
