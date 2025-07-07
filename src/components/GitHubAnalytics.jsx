@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Github, Users, GitBranch, Star, Calendar, Activity } from 'lucide-react';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
@@ -36,27 +35,90 @@ const GitHubAnalytics = () => {
   const [streakRef, streakVisible] = useScrollAnimation();
   const [chartsRef, chartsVisible] = useScrollAnimation();
 
-  // GitHub stats data (you can replace with real API data)
-  const githubStats = {
-    username: "5656ANUJ",
-    followers: 12,
-    following: 25,
-    publicRepos: 18,
-    totalStars: 45,
-    totalCommits: 234,
-    currentStreak: 7,
-    longestStreak: 15,
-    profileImage: "https://github.com/5656ANUJ.png"
-  };
+  const [githubData, setGithubData] = useState(null);
+  const [repositories, setRepositories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Generate GitHub-style contribution data for the past year
+  const username = "5656ANUJ";
+
+  useEffect(() => {
+    const fetchGitHubData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch user profile data
+        const userResponse = await fetch(`https://api.github.com/users/${username}`);
+        if (!userResponse.ok) throw new Error('Failed to fetch user data');
+        const userData = await userResponse.json();
+        
+        // Fetch repositories data
+        const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
+        if (!reposResponse.ok) throw new Error('Failed to fetch repositories');
+        const reposData = await reposResponse.json();
+        
+        setGithubData(userData);
+        setRepositories(reposData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching GitHub data:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchGitHubData();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="github" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-400 mx-auto mb-4"></div>
+          <p className="text-gray-300 text-xl">Loading GitHub Analytics...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="github" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 text-xl mb-4">Error loading GitHub data: {error}</p>
+          <p className="text-gray-300">Please check your internet connection and try again.</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Calculate repository statistics
+  const totalStars = repositories.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+  const totalForks = repositories.reduce((sum, repo) => sum + repo.forks_count, 0);
+  const publicRepos = repositories.filter(repo => !repo.private).length;
+  const forkedRepos = repositories.filter(repo => repo.fork).length;
+  const originalRepos = repositories.filter(repo => !repo.fork).length;
+
+  // Get language statistics
+  const languageStats = {};
+  repositories.forEach(repo => {
+    if (repo.language) {
+      languageStats[repo.language] = (languageStats[repo.language] || 0) + 1;
+    }
+  });
+
+  const topLanguages = Object.entries(languageStats)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 6);
+
+  // Generate mock contribution data (GitHub API doesn't provide this without authentication)
   const generateContributionData = () => {
     const data = [];
     const today = new Date();
     const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
     
     for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-      const contributions = Math.floor(Math.random() * 8); // 0-7 contributions per day
+      const contributions = Math.floor(Math.random() * 8);
       data.push({
         date: new Date(d),
         count: contributions,
@@ -96,22 +158,22 @@ const GitHubAnalytics = () => {
 
   const getContributionColor = (level) => {
     const colors = {
-      0: '#161b22', // No contributions
-      1: '#0e4429', // Low
-      2: '#006d32', // Medium-low
-      3: '#26a641', // Medium
-      4: '#39d353'  // High
+      0: '#161b22',
+      1: '#0e4429',
+      2: '#006d32',
+      3: '#26a641',
+      4: '#39d353'
     };
     return colors[level] || colors[0];
   };
 
-  // Contribution data for line chart
+  // Chart data
   const contributionChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
-        label: 'Contributions',
-        data: [12, 19, 3, 5, 2, 15, 25, 30, 22, 18, 28, 35],
+        label: 'Repository Activity',
+        data: Array.from({ length: 12 }, () => Math.floor(Math.random() * 20) + 5),
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         tension: 0.4,
@@ -120,43 +182,36 @@ const GitHubAnalytics = () => {
     ],
   };
 
-  // Language distribution data
   const languageData = {
-    labels: ['JavaScript', 'React', 'HTML', 'CSS', 'Python', 'Other'],
+    labels: topLanguages.map(([lang]) => lang),
     datasets: [
       {
-        data: [35, 25, 15, 12, 8, 5],
+        data: topLanguages.map(([, count]) => count),
         backgroundColor: [
-          '#F7DF1E',
-          '#61DAFB',
-          '#E34F26',
-          '#1572B6',
-          '#3776AB',
-          '#6B7280',
-        ],
+          '#F7DF1E', '#61DAFB', '#E34F26', '#1572B6', '#3776AB', '#6B7280'
+        ].slice(0, topLanguages.length),
         borderWidth: 0,
       },
     ],
   };
 
-  // Repository stats
   const repoData = {
-    labels: ['Public', 'Private', 'Forked', 'Original'],
+    labels: ['Public', 'Forked', 'Original', 'Total Stars'],
     datasets: [
       {
-        label: 'Repositories',
-        data: [18, 5, 8, 15],
+        label: 'Repository Stats',
+        data: [publicRepos, forkedRepos, originalRepos, totalStars],
         backgroundColor: [
           'rgba(34, 197, 94, 0.8)',
-          'rgba(239, 68, 68, 0.8)',
           'rgba(168, 85, 247, 0.8)',
           'rgba(59, 130, 246, 0.8)',
+          'rgba(251, 191, 36, 0.8)',
         ],
         borderColor: [
           'rgb(34, 197, 94)',
-          'rgb(239, 68, 68)',
           'rgb(168, 85, 247)',
           'rgb(59, 130, 246)',
+          'rgb(251, 191, 36)',
         ],
         borderWidth: 2,
       },
@@ -211,7 +266,7 @@ const GitHubAnalytics = () => {
             GitHub <span className="gradient-text-animate bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Analytics</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Dive into my coding journey with detailed GitHub statistics and insights
+            Real-time insights from my GitHub profile and coding journey
           </p>
         </div>
 
@@ -224,7 +279,7 @@ const GitHubAnalytics = () => {
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="relative">
                 <img 
-                  src={githubStats.profileImage} 
+                  src={githubData.avatar_url} 
                   alt="GitHub Profile"
                   className="w-32 h-32 rounded-full border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 hover:scale-105"
                 />
@@ -233,10 +288,16 @@ const GitHubAnalytics = () => {
                 </div>
               </div>
               <div className="text-center md:text-left">
-                <h3 className="text-3xl font-bold text-white mb-2">@{githubStats.username}</h3>
-                <p className="text-gray-300 mb-4">Full Stack Developer & Open Source Contributor</p>
+                <h3 className="text-3xl font-bold text-white mb-2">@{githubData.login}</h3>
+                <p className="text-gray-300 mb-2">{githubData.name}</p>
+                {githubData.bio && <p className="text-gray-400 mb-4">{githubData.bio}</p>}
+                <div className="flex flex-wrap gap-4 mb-4 text-sm text-gray-300">
+                  {githubData.location && <span>📍 {githubData.location}</span>}
+                  {githubData.company && <span>🏢 {githubData.company}</span>}
+                  <span>📅 Joined {new Date(githubData.created_at).toLocaleDateString()}</span>
+                </div>
                 <a 
-                  href={`https://github.com/${githubStats.username}`}
+                  href={githubData.html_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full hover:from-purple-700 hover:to-blue-700 transition-all duration-300 hover:scale-105"
@@ -259,7 +320,7 @@ const GitHubAnalytics = () => {
               <Users className="text-blue-400" size={24} />
               <span className="text-gray-300">Followers</span>
             </div>
-            <div className="text-3xl font-bold text-white">{githubStats.followers}</div>
+            <div className="text-3xl font-bold text-white">{githubData.followers}</div>
           </div>
           
           <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-green-500/50 transition-all duration-300 hover:scale-105">
@@ -267,7 +328,7 @@ const GitHubAnalytics = () => {
               <GitBranch className="text-green-400" size={24} />
               <span className="text-gray-300">Repositories</span>
             </div>
-            <div className="text-3xl font-bold text-white">{githubStats.publicRepos}</div>
+            <div className="text-3xl font-bold text-white">{githubData.public_repos}</div>
           </div>
           
           <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-yellow-500/50 transition-all duration-300 hover:scale-105">
@@ -275,15 +336,15 @@ const GitHubAnalytics = () => {
               <Star className="text-yellow-400" size={24} />
               <span className="text-gray-300">Total Stars</span>
             </div>
-            <div className="text-3xl font-bold text-white">{githubStats.totalStars}</div>
+            <div className="text-3xl font-bold text-white">{totalStars}</div>
           </div>
           
           <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
             <div className="flex items-center gap-3 mb-3">
               <Activity className="text-purple-400" size={24} />
-              <span className="text-gray-300">Commits</span>
+              <span className="text-gray-300">Following</span>
             </div>
-            <div className="text-3xl font-bold text-white">{githubStats.totalCommits}</div>
+            <div className="text-3xl font-bold text-white">{githubData.following}</div>
           </div>
         </div>
 
@@ -295,13 +356,15 @@ const GitHubAnalytics = () => {
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-white mb-2">Contribution Activity</h3>
             <p className="text-gray-300">
-              {totalContributions} contributions in the last year
+              {totalContributions} contributions in the last year (simulated data)
+            </p>
+            <p className="text-sm text-gray-400 mt-1">
+              *Note: Actual contribution data requires GitHub authentication
             </p>
           </div>
           
           <div className="overflow-x-auto">
             <div className="inline-block min-w-full">
-              {/* Month labels */}
               <div className="flex mb-2">
                 <div className="w-10"></div>
                 {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
@@ -311,9 +374,7 @@ const GitHubAnalytics = () => {
                 ))}
               </div>
               
-              {/* Day labels and heatmap */}
               <div className="flex">
-                {/* Day labels */}
                 <div className="flex flex-col justify-between w-10 text-xs text-gray-400 pr-2">
                   <div>Sun</div>
                   <div>Mon</div>
@@ -324,7 +385,6 @@ const GitHubAnalytics = () => {
                   <div>Sat</div>
                 </div>
                 
-                {/* Heatmap grid */}
                 <div className="flex gap-1">
                   {weeksData.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col gap-1">
@@ -346,7 +406,6 @@ const GitHubAnalytics = () => {
                 </div>
               </div>
               
-              {/* Legend */}
               <div className="flex items-center gap-2 mt-4 text-xs text-gray-400">
                 <span>Less</span>
                 <div className="flex gap-1">
@@ -364,24 +423,24 @@ const GitHubAnalytics = () => {
           </div>
         </div>
 
-        {/* Streak Section */}
+        {/* Activity Timeline */}
         <div 
           ref={streakRef}
           className={`bg-slate-800/30 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-slate-700/50 hover:border-orange-500/30 transition-all duration-500 scroll-animate scroll-animate-delay-500 ${streakVisible ? 'animate-in' : ''}`}
         >
           <div className="flex items-center gap-3 mb-6">
             <Calendar className="text-orange-400" size={32} />
-            <h3 className="text-2xl font-bold text-white">Contribution Streak</h3>
+            <h3 className="text-2xl font-bold text-white">Repository Activity</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <div className="text-center mb-4">
-                <div className="text-4xl font-bold text-orange-400 mb-2">{githubStats.currentStreak}</div>
-                <div className="text-gray-300">Current Streak (days)</div>
+                <div className="text-4xl font-bold text-orange-400 mb-2">{totalForks}</div>
+                <div className="text-gray-300">Total Forks</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-300 mb-2">{githubStats.longestStreak}</div>
-                <div className="text-gray-300">Longest Streak (days)</div>
+                <div className="text-3xl font-bold text-orange-300 mb-2">{originalRepos}</div>
+                <div className="text-gray-300">Original Repositories</div>
               </div>
             </div>
             <div className="h-64">
@@ -396,9 +455,15 @@ const GitHubAnalytics = () => {
           className={`grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-animate scroll-animate-delay-600 ${chartsVisible ? 'animate-in' : ''}`}
         >
           <div className="bg-slate-800/30 backdrop-blur-sm rounded-3xl p-8 border border-slate-700/50 hover:border-pink-500/30 transition-all duration-500">
-            <h3 className="text-2xl font-bold text-white mb-6 text-center">Language Distribution</h3>
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">Top Languages</h3>
             <div className="h-80">
-              <Doughnut data={languageData} options={doughnutOptions} />
+              {topLanguages.length > 0 ? (
+                <Doughnut data={languageData} options={doughnutOptions} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  No language data available
+                </div>
+              )}
             </div>
           </div>
           
