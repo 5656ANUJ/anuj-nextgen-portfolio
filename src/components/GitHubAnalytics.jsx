@@ -32,6 +32,7 @@ const GitHubAnalytics = () => {
   const [headerRef, headerVisible] = useScrollAnimation();
   const [profileRef, profileVisible] = useScrollAnimation();
   const [statsRef, statsVisible] = useScrollAnimation();
+  const [heatmapRef, heatmapVisible] = useScrollAnimation();
   const [streakRef, streakVisible] = useScrollAnimation();
   const [chartsRef, chartsVisible] = useScrollAnimation();
 
@@ -48,8 +49,64 @@ const GitHubAnalytics = () => {
     profileImage: "https://github.com/5656ANUJ.png"
   };
 
-  // Contribution data for streak graph
-  const contributionData = {
+  // Generate GitHub-style contribution data for the past year
+  const generateContributionData = () => {
+    const data = [];
+    const today = new Date();
+    const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+    
+    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
+      const contributions = Math.floor(Math.random() * 8); // 0-7 contributions per day
+      data.push({
+        date: new Date(d),
+        count: contributions,
+        level: contributions === 0 ? 0 : contributions <= 2 ? 1 : contributions <= 4 ? 2 : contributions <= 6 ? 3 : 4
+      });
+    }
+    return data;
+  };
+
+  const contributionData = generateContributionData();
+  const totalContributions = contributionData.reduce((sum, day) => sum + day.count, 0);
+
+  // Group contribution data by weeks
+  const getWeeksData = () => {
+    const weeks = [];
+    let currentWeek = [];
+    
+    contributionData.forEach((day, index) => {
+      const dayOfWeek = day.date.getDay();
+      
+      if (dayOfWeek === 0 && currentWeek.length > 0) {
+        weeks.push([...currentWeek]);
+        currentWeek = [];
+      }
+      
+      currentWeek.push(day);
+      
+      if (index === contributionData.length - 1) {
+        weeks.push(currentWeek);
+      }
+    });
+    
+    return weeks;
+  };
+
+  const weeksData = getWeeksData();
+
+  const getContributionColor = (level) => {
+    const colors = {
+      0: '#161b22', // No contributions
+      1: '#0e4429', // Low
+      2: '#006d32', // Medium-low
+      3: '#26a641', // Medium
+      4: '#39d353'  // High
+    };
+    return colors[level] || colors[0];
+  };
+
+  // Contribution data for line chart
+  const contributionChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
@@ -230,10 +287,87 @@ const GitHubAnalytics = () => {
           </div>
         </div>
 
+        {/* GitHub Style Contribution Heatmap */}
+        <div 
+          ref={heatmapRef}
+          className={`bg-slate-800/30 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-slate-700/50 hover:border-green-500/30 transition-all duration-500 scroll-animate scroll-animate-delay-400 ${heatmapVisible ? 'animate-in' : ''}`}
+        >
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-white mb-2">Contribution Activity</h3>
+            <p className="text-gray-300">
+              {totalContributions} contributions in the last year
+            </p>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <div className="inline-block min-w-full">
+              {/* Month labels */}
+              <div className="flex mb-2">
+                <div className="w-10"></div>
+                {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
+                  <div key={month} className="text-xs text-gray-400 w-16 text-center">
+                    {index % 2 === 0 ? month : ''}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Day labels and heatmap */}
+              <div className="flex">
+                {/* Day labels */}
+                <div className="flex flex-col justify-between w-10 text-xs text-gray-400 pr-2">
+                  <div>Sun</div>
+                  <div>Mon</div>
+                  <div>Tue</div>
+                  <div>Wed</div>
+                  <div>Thu</div>
+                  <div>Fri</div>
+                  <div>Sat</div>
+                </div>
+                
+                {/* Heatmap grid */}
+                <div className="flex gap-1">
+                  {weeksData.map((week, weekIndex) => (
+                    <div key={weekIndex} className="flex flex-col gap-1">
+                      {Array.from({ length: 7 }, (_, dayIndex) => {
+                        const dayData = week.find(day => day.date.getDay() === dayIndex);
+                        return (
+                          <div
+                            key={`${weekIndex}-${dayIndex}`}
+                            className="w-3 h-3 rounded-sm transition-all duration-200 hover:scale-125 cursor-pointer"
+                            style={{
+                              backgroundColor: dayData ? getContributionColor(dayData.level) : '#161b22'
+                            }}
+                            title={dayData ? `${dayData.count} contributions on ${dayData.date.toDateString()}` : 'No data'}
+                          />
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Legend */}
+              <div className="flex items-center gap-2 mt-4 text-xs text-gray-400">
+                <span>Less</span>
+                <div className="flex gap-1">
+                  {[0, 1, 2, 3, 4].map(level => (
+                    <div
+                      key={level}
+                      className="w-3 h-3 rounded-sm"
+                      style={{ backgroundColor: getContributionColor(level) }}
+                    />
+                  ))}
+                </div>
+                <span>More</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Streak Section */}
         <div 
           ref={streakRef}
-          className={`bg-slate-800/30 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-slate-700/50 hover:border-orange-500/30 transition-all duration-500 scroll-animate scroll-animate-delay-400 ${streakVisible ? 'animate-in' : ''}`}
+          className={`bg-slate-800/30 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-slate-700/50 hover:border-orange-500/30 transition-all duration-500 scroll-animate scroll-animate-delay-500 ${streakVisible ? 'animate-in' : ''}`}
         >
           <div className="flex items-center gap-3 mb-6">
             <Calendar className="text-orange-400" size={32} />
@@ -251,7 +385,7 @@ const GitHubAnalytics = () => {
               </div>
             </div>
             <div className="h-64">
-              <Line data={contributionData} options={chartOptions} />
+              <Line data={contributionChartData} options={chartOptions} />
             </div>
           </div>
         </div>
@@ -259,7 +393,7 @@ const GitHubAnalytics = () => {
         {/* Charts Section */}
         <div 
           ref={chartsRef}
-          className={`grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-animate scroll-animate-delay-500 ${chartsVisible ? 'animate-in' : ''}`}
+          className={`grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-animate scroll-animate-delay-600 ${chartsVisible ? 'animate-in' : ''}`}
         >
           <div className="bg-slate-800/30 backdrop-blur-sm rounded-3xl p-8 border border-slate-700/50 hover:border-pink-500/30 transition-all duration-500">
             <h3 className="text-2xl font-bold text-white mb-6 text-center">Language Distribution</h3>
