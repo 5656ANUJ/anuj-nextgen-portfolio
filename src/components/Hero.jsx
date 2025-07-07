@@ -1,6 +1,7 @@
 import { ArrowDown, Github, Linkedin, Mail, Phone, Instagram, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { trackEvent } from '../GA';
 
 const Hero = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
@@ -11,6 +12,9 @@ const Hero = () => {
   const [arrowRef, arrowVisible] = useScrollAnimation();
 
   const handleResumeDownload = () => {
+    // Track the resume download event
+    trackEvent('click', 'Button', 'Resume Download');
+    
     // Replace this URL with your actual resume link
     // You can host your resume on Google Drive, Dropbox, or any file hosting service
     const resumeUrl = 'https://docs.google.com/document/d/1Dnqimfj390AeQMrvs6_cmc2ywYx_Ma6JiPGfv70lPyk/edit?usp=sharing'; // Replace with your actual resume URL
@@ -102,6 +106,7 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-blue-400 transition-all duration-300 hover:scale-110 transform hover:rotate-12 p-2 rounded-full hover:bg-blue-400/10"
+            onClick={() => trackEvent('click', 'Social Media', 'LinkedIn')}
           >
             <Linkedin size={28} />
           </a>
@@ -110,6 +115,7 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-gray-300 transition-all duration-300 hover:scale-110 transform hover:rotate-12 p-2 rounded-full hover:bg-gray-300/10"
+            onClick={() => trackEvent('click', 'Social Media', 'GitHub')}
           >
             <Github size={28} />
           </a>
@@ -118,18 +124,21 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-pink-400 transition-all duration-300 hover:scale-110 transform hover:rotate-12 p-2 rounded-full hover:bg-pink-400/10"
+            onClick={() => trackEvent('click', 'Social Media', 'Instagram')}
           >
             <Instagram size={28} />
           </a>
           <a 
             href="mailto:dekateanuj65@gmail.com"
             className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:scale-110 transform hover:rotate-12 p-2 rounded-full hover:bg-purple-400/10"
+            onClick={() => trackEvent('click', 'Social Media', 'Email')}
           >
             <Mail size={28} />
           </a>
           <a 
             href="tel:7620013146"
             className="text-gray-400 hover:text-green-400 transition-all duration-300 hover:scale-110 transform hover:rotate-12 p-2 rounded-full hover:bg-green-400/10"
+            onClick={() => trackEvent('click', 'Social Media', 'Phone')}
           >
             <Phone size={28} />
           </a>
