@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Github, Users, GitBranch, Star, Calendar, Activity, Code } from 'lucide-react';
 import { Line, Bar } from 'react-chartjs-2';
@@ -43,6 +42,73 @@ const GitHubAnalytics = () => {
   const [contributionData, setContributionData] = useState([]);
 
   const username = "5656ANUJ";
+  const githubToken = "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";
+
+  const fetchContributionData = async () => {
+    const query = `
+      query($username: String!) {
+        user(login: $username) {
+          contributionsCollection {
+            contributionCalendar {
+              totalContributions
+              weeks {
+                contributionDays {
+                  contributionCount
+                  date
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    try {
+      const response = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${githubToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query,
+          variables: { username }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`GraphQL request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.errors) {
+        throw new Error(`GraphQL errors: ${data.errors.map(e => e.message).join(', ')}`);
+      }
+
+      const calendar = data.data.user.contributionsCollection.contributionCalendar;
+      const contributions = [];
+
+      calendar.weeks.forEach(week => {
+        week.contributionDays.forEach(day => {
+          contributions.push({
+            date: new Date(day.date),
+            count: day.contributionCount,
+            level: day.contributionCount === 0 ? 0 : 
+                   day.contributionCount <= 3 ? 1 : 
+                   day.contributionCount <= 6 ? 2 : 
+                   day.contributionCount <= 9 ? 3 : 4
+          });
+        });
+      });
+
+      return contributions;
+    } catch (error) {
+      console.error('Error fetching contribution data:', error);
+      // Fallback to empty array if GraphQL fails
+      return [];
+    }
+  };
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -94,32 +160,8 @@ const GitHubAnalytics = () => {
             percentage: Math.round((bytes / Object.values(allLanguages).reduce((a, b) => a + b, 0)) * 100)
           }));
 
-        // Fetch recent activity for contribution simulation
-        const eventsResponse = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100`);
-        let activityData = {};
-        
-        if (eventsResponse.ok) {
-          const events = await eventsResponse.json();
-          events.forEach(event => {
-            const date = new Date(event.created_at).toDateString();
-            activityData[date] = (activityData[date] || 0) + 1;
-          });
-        }
-
-        // Generate contribution heatmap data for the last year
-        const contributions = [];
-        const today = new Date();
-        for (let i = 364; i >= 0; i--) {
-          const date = new Date(today);
-          date.setDate(date.getDate() - i);
-          const dateString = date.toDateString();
-          const count = activityData[dateString] || Math.floor(Math.random() * 3);
-          contributions.push({
-            date,
-            count,
-            level: count === 0 ? 0 : count <= 1 ? 1 : count <= 2 ? 2 : count <= 4 ? 3 : 4
-          });
-        }
+        // Fetch real contribution data
+        const contributions = await fetchContributionData();
 
         setGithubData(userData);
         setRepositories(reposData);
