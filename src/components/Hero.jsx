@@ -15,6 +15,7 @@ const Hero = () => {
   const [profileRef, profileVisible] = useScrollAnimation();
 
   const { displayText: typedName, isTyping } = useTypewriter("Anuj Dekate", 150, 1000);
+  const { displayText: typedGreeting, isTyping: isTypingGreeting } = useTypewriter("Hi, I'm ", 100, 500);
 
   const handleResumeDownload = () => {
     // Track the resume download event
@@ -61,7 +62,9 @@ const Hero = () => {
           className={`mb-8 scroll-animate scroll-animate-delay-100 ${titleVisible ? 'animate-in' : ''}`}
         >
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            Hi, I'm{" "}
+            <span className={isTypingGreeting ? 'typewriter-cursor' : ''}>
+              {typedGreeting}
+            </span>
             <span className="gradient-text-smooth bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               <span className={isTyping ? 'typewriter-cursor' : ''}>
                 {displayText}
