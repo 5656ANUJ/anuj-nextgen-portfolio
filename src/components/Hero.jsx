@@ -1,6 +1,8 @@
+
 import { ArrowDown, Github, Linkedin, Mail, Phone, Instagram, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useTypewriter } from "@/hooks/use-typewriter";
 import { trackEvent } from '../GA';
 
 const Hero = () => {
@@ -10,6 +12,9 @@ const Hero = () => {
   const [buttonsRef, buttonsVisible] = useScrollAnimation();
   const [socialRef, socialVisible] = useScrollAnimation();
   const [arrowRef, arrowVisible] = useScrollAnimation();
+  const [profileRef, profileVisible] = useScrollAnimation();
+
+  const { displayText: typedName, isTyping } = useTypewriter("Anuj Dekate", 150, 1000);
 
   const handleResumeDownload = () => {
     // Track the resume download event
@@ -28,23 +33,39 @@ const Hero = () => {
       {/* Background gradient with animated particles */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900" />
       
-      {/* Floating animated background elements */}
+      {/* Floating animated background elements with lighter animations */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-60"></div>
-        <div className="absolute top-40 right-20 w-1 h-1 bg-blue-400 rounded-full animate-ping opacity-40"></div>
-        <div className="absolute bottom-32 left-20 w-3 h-3 bg-pink-400 rounded-full animate-bounce opacity-50"></div>
-        <div className="absolute bottom-20 right-32 w-2 h-2 bg-green-400 rounded-full animate-pulse opacity-60"></div>
+        <div className="absolute top-20 left-10 w-2 h-2 bg-purple-400 rounded-full animate-pulse-smooth opacity-60"></div>
+        <div className="absolute top-40 right-20 w-1 h-1 bg-blue-400 rounded-full animate-float-light opacity-40"></div>
+        <div className="absolute bottom-32 left-20 w-3 h-3 bg-pink-400 rounded-full animate-float-delayed-light opacity-50"></div>
+        <div className="absolute bottom-20 right-32 w-2 h-2 bg-green-400 rounded-full animate-pulse-smooth opacity-60"></div>
       </div>
       
       <div className="max-w-4xl mx-auto text-center relative z-10">
+        {/* Profile Photo */}
+        <div 
+          ref={profileRef}
+          className={`mb-8 scroll-animate ${profileVisible ? 'animate-in' : ''}`}
+        >
+          <div className="relative inline-block">
+            <img 
+              src="https://avatars.githubusercontent.com/u/136743203?v=4" 
+              alt="Anuj Dekate"
+              className="profile-photo w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 object-cover animate-float-light"
+            />
+          </div>
+        </div>
+
         <div 
           ref={titleRef}
-          className={`mb-8 scroll-animate ${titleVisible ? 'animate-in' : ''}`}
+          className={`mb-8 scroll-animate scroll-animate-delay-100 ${titleVisible ? 'animate-in' : ''}`}
         >
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
             Hi, I'm{" "}
-            <span className="gradient-text-animate bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-              Anuj Dekate
+            <span className="gradient-text-smooth bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className={isTyping ? 'typewriter-cursor' : ''}>
+                {displayText}
+              </span>
             </span>
           </h1>
         </div>
@@ -150,7 +171,7 @@ const Hero = () => {
         >
           <ArrowDown 
             size={32} 
-            className="text-gray-400 mx-auto cursor-pointer hover:text-white transition-all duration-300 hover:scale-110 animate-bounce"
+            className="text-gray-400 mx-auto cursor-pointer hover:text-white transition-all duration-300 hover:scale-110 animate-float-light"
             onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
           />
         </div>

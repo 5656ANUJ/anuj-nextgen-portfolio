@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -201,6 +200,78 @@ All colors MUST be HSL.
     transition: width 0.1s ease;
     box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
   }
+
+  /* Typewriter Animation */
+  .typewriter {
+    overflow: hidden;
+    border-right: 2px solid;
+    border-color: hsl(var(--primary));
+    white-space: nowrap;
+    animation: typewriter 3s steps(40, end), blink-caret 1s step-end infinite;
+  }
+
+  .typewriter-cursor {
+    border-right: 2px solid;
+    border-color: hsl(262, 83%, 58%);
+    animation: blink-caret 1s step-end infinite;
+  }
+
+  /* Enhanced Profile Photo Animations */
+  .profile-photo {
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .profile-photo::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #10b981);
+    background-size: 300% 300%;
+    animation: gradientRotate 4s ease infinite;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .profile-photo:hover::before {
+    opacity: 1;
+  }
+
+  .profile-photo:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+  }
+
+  /* Enhanced floating animations with lighter weight */
+  .animate-float-light {
+    animation: floatLight 6s ease-in-out infinite;
+  }
+
+  .animate-float-delayed-light {
+    animation: floatLight 6s ease-in-out infinite;
+    animation-delay: 3s;
+  }
+
+  /* Smooth pulse animation */
+  .animate-pulse-smooth {
+    animation: pulseSmooth 3s ease-in-out infinite;
+  }
+
+  /* Enhanced gradient text animation with smoother transitions */
+  .gradient-text-smooth {
+    background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #ec4899, #10b981);
+    background-size: 300% 300%;
+    animation: gradientShiftSmooth 6s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 /* Enhanced Keyframes */
@@ -313,4 +384,64 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #2563eb, #7c3aed, #db2777);
   box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: hsl(262, 83%, 58%); }
+}
+
+@keyframes floatLight {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.02);
+  }
+}
+
+@keyframes pulseSmooth {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gradientShiftSmooth {
+  0% {
+    background-position: 0% 50%;
+  }
+  33% {
+    background-position: 100% 50%;
+  }
+  66% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientRotate {
+  0% {
+    background-position: 0% 50%;
+    transform: rotate(0deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: rotate(180deg);
+  }
+  100% {
+    background-position: 0% 50%;
+    transform: rotate(360deg);
+  }
 }
