@@ -1,13 +1,9 @@
-
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-
 const About = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
   const [contentRef, contentVisible] = useScrollAnimation();
   const [statsRef, statsVisible] = useScrollAnimation();
-
-  return (
-    <section id="about" className="py-20 px-4 relative overflow-hidden">
+  return <section id="about" className="py-20 px-4 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900/30 via-purple-900/5 to-slate-900/30" />
       
@@ -18,10 +14,7 @@ const About = () => {
       </div>
       
       <div className="max-w-4xl mx-auto relative z-10">
-        <div 
-          ref={titleRef}
-          className={`text-center mb-12 scroll-animate ${titleVisible ? 'animate-in' : ''}`}
-        >
+        <div ref={titleRef} className={`text-center mb-12 scroll-animate ${titleVisible ? 'animate-in' : ''}`}>
           <h2 className="text-4xl font-bold text-white mb-6">
             About <span className="gradient-text-animate bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Me</span>
           </h2>
@@ -30,10 +23,7 @@ const About = () => {
           </p>
         </div>
         
-        <div 
-          ref={contentRef}
-          className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-slate-700/50 hover:border-purple-500/30 transition-all duration-500 scroll-animate scroll-animate-delay-200 ${contentVisible ? 'animate-in' : ''}`}
-        >
+        <div ref={contentRef} className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-slate-700/50 hover:border-purple-500/30 transition-all duration-500 scroll-animate scroll-animate-delay-200 ${contentVisible ? 'animate-in' : ''}`}>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold text-white mb-4 gradient-text-animate bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
@@ -57,10 +47,7 @@ const About = () => {
               </div>
             </div>
             
-            <div 
-              ref={statsRef}
-              className={`space-y-4 scroll-stagger ${statsVisible ? 'animate-in' : ''}`}
-            >
+            <div ref={statsRef} className={`space-y-4 scroll-stagger ${statsVisible ? 'animate-in' : ''}`}>
               <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-purple-500/50 hover:scale-105 transform">
                 <h4 className="text-lg font-semibold text-purple-400 mb-2">Education</h4>
                 <p className="text-gray-300">B.Tech in Electronics & Communications</p>
@@ -68,9 +55,12 @@ const About = () => {
               </div>
               
               <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-blue-500/50 hover:scale-105 transform">
-                <h4 className="text-lg font-semibold text-blue-400 mb-2">Current Role</h4>
+                <h4 className="text-lg font-semibold text-blue-400 mb-2">
+
+
+              </h4>
                 <p className="text-gray-300">Web Development Intern</p>
-                <p className="text-gray-400 text-sm">InternPro (June 2025 - Present)</p>
+                <p className="text-gray-400 text-sm">InternPro (June-July 2025)</p>
               </div>
               
               <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-all duration-300 border border-slate-600/50 hover:border-green-500/50 hover:scale-105 transform">
@@ -82,8 +72,6 @@ const About = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default About;
