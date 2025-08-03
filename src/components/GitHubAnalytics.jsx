@@ -157,12 +157,7 @@ const GitHubAnalytics = () => {
       </section>;
   }
   if (error) {
-    return <section id="github" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-400 text-xl mb-4">Error loading GitHub data: {error}</p>
-          <p className="text-gray-300">Please check your internet connection and try again.</p>
-        </div>
-      </section>;
+    return;
   }
 
   // Calculate repository statistics
