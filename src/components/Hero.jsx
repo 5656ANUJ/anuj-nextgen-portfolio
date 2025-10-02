@@ -2,6 +2,10 @@ import { ArrowDown, Github, Linkedin, Mail, Phone, Instagram, Download } from "l
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { trackEvent } from '../GA';
+import profileImage from "@/assets/profile.png";
+import { Button } from "@/components/ui/button";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { trackEvent } from '../GA';
 
 const Hero = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
@@ -37,6 +41,18 @@ const Hero = () => {
       </div>
       
       <div className="max-w-4xl mx-auto text-center relative z-10">
+        {/* Profile Picture */}
+        <div className="mb-8 flex justify-center scroll-animate">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+            <img 
+              src={profileImage} 
+              alt="Anuj Dekate" 
+              className="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-slate-800 shadow-2xl hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        </div>
+
         <div 
           ref={titleRef}
           className={`mb-8 scroll-animate ${titleVisible ? 'animate-in' : ''}`}
