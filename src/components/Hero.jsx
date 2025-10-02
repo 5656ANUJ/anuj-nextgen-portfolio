@@ -2,7 +2,7 @@ import { ArrowDown, Github, Linkedin, Mail, Phone, Instagram, Download } from "l
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { trackEvent } from '../GA';
-import profileImage from "@/assets/profile.png";
+import profileImage from "@/assets/profile.jpg";
 
 const Hero = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
