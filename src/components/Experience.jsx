@@ -6,6 +6,23 @@ const Experience = () => {
 
   const experiences = [
     {
+      title: "UI UX Intern",
+      company: "INFINOVA EDUVENTURES",
+      location: "Pune, Maharashtra, India · Remote",
+      period: "Aug 2025 - Present",
+      duration: "3 months",
+      type: "Internship",
+      description: "Working on everything related to UI/UX and Figma design — creating responsive, user-centric designs that enhance user experience.",
+      color: "from-cyan-500 to-blue-600",
+      detailedDescription: "In this role, I'll be working on everything related to UI/UX and Figma design — creating responsive, user-centric designs that enhance user experience. This opportunity will help me strengthen my design thinking skills and give me an edge in my path toward becoming a Full-Stack Developer, since UI/UX and development go hand-in-hand.\n\nThis internship allows me to apply design thinking principles to real-world projects, collaborate with cross-functional teams, and develop a comprehensive understanding of the user-centered design process. I'm gaining hands-on experience with industry-standard tools and methodologies while building a strong foundation for full-stack development.",
+      skills: ["UI/UX Design", "Figma", "Front-End Design", "Front-End Development", "React.js", "Time Management", "Collaborative Problem Solving", "Wireframing"],
+      achievements: [
+        "Creating responsive, user-centric designs",
+        "Strengthening design thinking skills",
+        "Bridging UI/UX with development practices"
+      ]
+    },
+    {
       title: "Web Development Intern",
       company: "InternPro",
       location: "Maharashtra, India · Remote",
