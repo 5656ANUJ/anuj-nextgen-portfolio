@@ -3,9 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { trackEvent } from '../GA';
 import profileImage from "@/assets/profile.png";
-import { Button } from "@/components/ui/button";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { trackEvent } from '../GA';
 
 const Hero = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
